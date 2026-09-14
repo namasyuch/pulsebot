@@ -1,40 +1,31 @@
 # PulseBot
-PulseBot is a Slack bot I made for StarDance using Python and Slack Bolt.
+A small Slack bot I made with Python and Slack Bolt for StarDance.
 
 ## Commands
-* `/pulse-help` — shows the commands
-* `/pulse-motivate` — sends a random motivational message
-* `/pulse-time` — shows the current time
 
-## Running it
+* `/pulse-help` - shows the commands
+* `/pulse-motivate` - sends a random message
+* `/pulse-time` - shows the current time
 
-Clone the repo and install the requirements.
+## Run
+Install the requirements:
 
-'''
-git clone https://github.com/namasyuch/pulsebot.git
-cd pulsebot
+```
 pip install -r requirements.txt
-'''
+```
 
-You need a Slack Bot Token and Slack App Token as environment variables:
-
+Set these environment variables:
 ```
 SLACK_BOT_TOKEN=your_bot_token
 SLACK_APP_TOKEN=your_app_token
 ```
 
-Keep the real tokens private.
-
-Run the bot with:
+Then run:
 ```
 python app.py
 ```
 
-## Deployment
-I tested the bot on my laptop first and then deployed it to Railway so it could keep running when my laptop is off.
-
-## What I learned
-I learned how Slack slash commands work, how to use Socket Mode, how to use environment variables, and how to deploy a Python bot.
+Keep the tokens private.
 
 ## GitHub
 https://github.com/namasyuch/pulsebot
