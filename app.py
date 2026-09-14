@@ -1,5 +1,5 @@
 import os
-import random
+import random 
 from datetime import datetime
 
 from slack_bolt import App
@@ -58,3 +58,4 @@ if __name__ == "__main__":
 
     print("⚡ PulseBot is running!")
     handler.start()
+
