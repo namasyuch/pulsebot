@@ -2,8 +2,9 @@ import os
 import random
 from datetime import datetime
 
+from flask import Flask, request
 from slack_bolt import App
-from slack_bolt.adapter.socket_mode import SocketModeHandler
+from slack_bolt.adapter.flask import SlackRequestHandler
 from slack_bolt.oauth.oauth_settings import OAuthSettings
 from slack_sdk.oauth.installation_store import FileInstallationStore
 
@@ -20,8 +21,8 @@ app = App(
         client_secret=os.environ["SLACK_CLIENT_SECRET"],
         scopes=["commands"],
         user_scopes=[],
-        installation_store=installation_store,
         redirect_uri=os.environ["SLACK_REDIRECT_URI"],
+        installation_store=installation_store,
     )
 )
 
@@ -61,10 +62,31 @@ def time_command(ack, respond):
     respond(f"🕐 Current time: `{current_time}`")
 
 
+flask_app = Flask(__name__)
+
+handler = SlackRequestHandler(app)
+
+
+@flask_app.route("/slack/install", methods=["GET"])
+def install():
+    return handler.handle(request)
+
+
+@flask_app.route("/slack/oauth_redirect", methods=["GET"])
+def oauth_redirect():
+    return handler.handle(request)
+
+
+@flask_app.route("/slack/events", methods=["POST"])
+def events():
+    return handler.handle(request)
+
+
+@flask_app.route("/", methods=["GET"])
+def home():
+    return "⚡ PulseBot is running!"
+
+
 if __name__ == "__main__":
-    app_token = os.environ["SLACK_APP_TOKEN"]
-
-    handler = SocketModeHandler(app, app_token)
-
-    print("⚡ PulseBot is running!")
-    handler.start()
+    port = int(os.environ.get("PORT", 3000))
+    flask_app.run(host="0.0.0.0", port=port)
