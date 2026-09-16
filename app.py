@@ -1,18 +1,31 @@
 import os
-import random 
+import random
 from datetime import datetime
 
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
+from slack_bolt.oauth.oauth_settings import OAuthSettings
+from slack_sdk.oauth.installation_store import FileInstallationStore
 
 
-# Create the Slack app using the Bot User OAuth Token
+installation_store = FileInstallationStore(
+    base_dir="./data/installations"
+)
+
 app = App(
-    token=os.environ["SLACK_BOT_TOKEN"]
+    signing_secret=os.environ["SLACK_SIGNING_SECRET"],
+    installation_store=installation_store,
+    oauth_settings=OAuthSettings(
+        client_id=os.environ["SLACK_CLIENT_ID"],
+        client_secret=os.environ["SLACK_CLIENT_SECRET"],
+        scopes=["commands"],
+        user_scopes=[],
+        installation_store=installation_store,
+        redirect_uri=os.environ["SLACK_REDIRECT_URI"],
+    )
 )
 
 
-# /pulse-help
 @app.command("/pulse-help")
 def help_command(ack, respond):
     ack()
@@ -25,7 +38,6 @@ def help_command(ack, respond):
     )
 
 
-# /pulse-motivate
 @app.command("/pulse-motivate")
 def motivate_command(ack, respond):
     ack()
@@ -40,7 +52,6 @@ def motivate_command(ack, respond):
     respond(random.choice(messages))
 
 
-# /pulse-time
 @app.command("/pulse-time")
 def time_command(ack, respond):
     ack()
@@ -50,7 +61,6 @@ def time_command(ack, respond):
     respond(f"🕐 Current time: `{current_time}`")
 
 
-# Start the bot using Slack Socket Mode
 if __name__ == "__main__":
     app_token = os.environ["SLACK_APP_TOKEN"]
 
@@ -58,4 +68,3 @@ if __name__ == "__main__":
 
     print("⚡ PulseBot is running!")
     handler.start()
-
